@@ -17,7 +17,7 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 brew install libomp                  # macOS only: LightGBM / XGBoost need the OpenMP runtime
 
-# Data: download the 9 CSV files from the OneDrive folder (https://1drv.ms/f/c/da4fc7aee9f85e92/IgAhczYtPwdoT7cqYtK6JjbuAe6e1tPrppsmppOnedM8PJc?e=c02Brs) into data/raw/,
+# Data: download the 9 CSV files from the OneDrive folder (https://1drv.ms/f/c/da4fc7aee9f85e92/IgA9UobStOQrRLMl7H6XW-zWAbasU_gjTQXA6HEIZGhP82I?e=a0KNAH) into data/raw/,
 # or regenerate the identical files (seeded):
 python -m src.generate_data
 
@@ -56,7 +56,7 @@ notebooks/01_eda.ipynb    2  EDA with outputs
 models/                   risk_scorer.joblib (final, in git); tuned candidates (not in git)
 reports/                  report.md, figures/, results/ (summary tables cited in the report)
 artifacts/                logs and intermediate files (not in git: regenerated)
-docs/                     sample API responses, slide notes
+docs/                     sample API responses, Postman collection, slide notes
 ```
 
 ## Code design
@@ -77,7 +77,7 @@ docs/                     sample API responses, slide notes
 python -m src.generate_data     # ~5 s, writes 9 CSV files (~36 MB) to data/raw/
 ```
 
-**Or download them:** the OneDrive folder [`raw`](https://1drv.ms/f/c/da4fc7aee9f85e92/IgAhczYtPwdoT7cqYtK6JjbuAe6e1tPrppsmppOnedM8PJc?e=c02Brs) is this repository's `data/raw/` folder.
+**Or download them:** the OneDrive folder [`raw`](https://1drv.ms/f/c/da4fc7aee9f85e92/IgA9UobStOQrRLMl7H6XW-zWAbasU_gjTQXA6HEIZGhP82I?e=a0KNAH) is this repository's `data/raw/` folder.
 Put its 9 CSV files in `data/raw/` under their original names (the code reads `data/raw/<table>.csv`, see
 `RAW_DIR` in `src/config.py`):
 
@@ -265,5 +265,9 @@ curl "localhost:8000/fleet/risk?date=2025-10-15&level=HIGH&limit=3"
 curl -X POST localhost:8000/predict -H 'Content-Type: application/json' \
      -d '{"as_of_date": "2025-10-15", "components": [{"serial_no": "FBP-00028"}]}'
 ```
+
+**Postman:** import [`docs/postman_collection.json`](docs/postman_collection.json): 6 requests (health, fleet risk,
+predict by serial and by tail + position, two error cases), each with a saved example response and tests.
+Variables `base_url` (default `http://127.0.0.1:8000`) and `as_of_date` (default `2025-10-15`).
 
 Example responses: [`docs/sample_responses/`](docs/sample_responses/).

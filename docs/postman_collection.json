@@ -1,0 +1,510 @@
+{
+  "info": {
+    "name": "Unscheduled Removal Risk API",
+    "description": "FastAPI service from https://github.com/baoloc97/aircraft_mro.\n\nStart it with `uvicorn api.main:app --reload` (needs data/raw/, see README), then run the collection. `base_url` defaults to http://127.0.0.1:8000 and `as_of_date` to 2025-10-15; dates must fall inside the mock data window 2024-02-01 to 2025-12-31. Each request has a saved example response (the same files as docs/sample_responses/) and tests.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "as_of_date",
+      "value": "2025-10-15"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"status ok\", () => pm.expect(pm.response.json().status).to.eql(\"ok\"));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "health"
+          ]
+        },
+        "description": "Model version, decision rule and risk thresholds."
+      },
+      "response": [
+        {
+          "name": "200 (saved sample)",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Model version, decision rule and risk thresholds."
+          },
+          "code": 200,
+          "status": "OK",
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"status\": \"ok\",\n  \"model_version\": \"v1\",\n  \"scorer\": \"single: XGBoost\",\n  \"models\": [\n    \"XGBoost\"\n  ],\n  \"alert_cap_per_run\": 0.05,\n  \"flag_threshold_risk\": 0.0211,\n  \"high_threshold_risk\": 0.2174,\n  \"train_period\": [\n    \"2024-01-29\",\n    \"2025-02-22\"\n  ],\n  \"horizon\": \"30 flight cycles\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Fleet risk - HIGH, top 3",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+              "const items = [].concat(pm.response.json().components || pm.response.json());",
+              "pm.test(\"each component has score, level and reasons\", () => items.forEach(c => {",
+              "    pm.expect(c.risk_score).to.be.within(0, 1);",
+              "    pm.expect([\"HIGH\", \"MEDIUM\", \"LOW\"]).to.include(c.risk_level);",
+              "    pm.expect(c.top_factors).to.be.an(\"array\").that.is.not.empty;",
+              "}));",
+              "pm.test(\"alert rate within the 5% cap\", () => pm.expect(pm.response.json().alert_rate).to.be.at.most(0.05));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/fleet/risk?date={{as_of_date}}&level=HIGH&limit=3",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "fleet",
+            "risk"
+          ],
+          "query": [
+            {
+              "key": "date",
+              "value": "{{as_of_date}}"
+            },
+            {
+              "key": "level",
+              "value": "HIGH"
+            },
+            {
+              "key": "limit",
+              "value": "3"
+            }
+          ]
+        },
+        "description": "Ranked risk list for the whole fleet as of a date (the daily job view). level = HIGH | MEDIUM | LOW | ALERTS (default) | ALL; limit 1-2000 (default 20)."
+      },
+      "response": [
+        {
+          "name": "200 (saved sample)",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/fleet/risk?date={{as_of_date}}&level=HIGH&limit=3",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "fleet",
+                "risk"
+              ],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "{{as_of_date}}"
+                },
+                {
+                  "key": "level",
+                  "value": "HIGH"
+                },
+                {
+                  "key": "limit",
+                  "value": "3"
+                }
+              ]
+            },
+            "description": "Ranked risk list for the whole fleet as of a date (the daily job view). level = HIGH | MEDIUM | LOW | ALERTS (default) | ALL; limit 1-2000 (default 20)."
+          },
+          "code": 200,
+          "status": "OK",
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"as_of_date\": \"2025-10-15\",\n  \"active_components\": 1160,\n  \"alerts\": 27,\n  \"alert_rate\": 0.0233,\n  \"returned\": 3,\n  \"components\": [\n    {\n      \"as_of_date\": \"2025-10-15\",\n      \"serial_no\": \"FBP-00028\",\n      \"part_no\": \"FBP-2820-03\",\n      \"part_description\": \"Fuel Boost Pump\",\n      \"ata_chapter\": \"28\",\n      \"tail_no\": \"AC038\",\n      \"position\": \"FUEL_PUMP_R1\",\n      \"risk_score\": 0.99,\n      \"risk_level\": \"HIGH\",\n      \"recommended_action\": \"Inspect within the next 5 flight cycles; pre-position a serviceable spare\",\n      \"top_factors\": [\n        {\n          \"feature\": \"primary_z3_signed\",\n          \"value\": 2.788,\n          \"impact\": 1.402,\n          \"reason\": \"Pressure 2.8σ below this unit's own baseline over the last 3 days\"\n        },\n        {\n          \"feature\": \"caution_faults_7d\",\n          \"value\": 2.0,\n          \"impact\": 1.171,\n          \"reason\": \"2 CAUTION/WARNING-level related fault(s) in 7 days\"\n        },\n        {\n          \"feature\": \"related_faults_30d\",\n          \"value\": 3.0,\n          \"impact\": 0.934,\n          \"reason\": \"3 related fault message(s) (ATA 28) in the last 30 days\"\n        }\n      ],\n      \"data_quality\": {\n        \"low_history\": false,\n        \"sensor_missing_ratio_7d\": 0.0,\n        \"days_since_last_reading\": 0.0,\n        \"confidence\": \"normal\"\n      },\n      \"model_version\": \"v1\"\n    },\n    {\n      \"as_of_date\": \"2025-10-15\",\n      \"serial_no\": \"FBP-00053\",\n      \"part_no\": \"FBP-2820-03\",\n      \"part_description\": \"Fuel Boost Pump\",\n      \"ata_chapter\": \"28\",\n      \"tail_no\": \"AC009\",\n      \"position\": \"FUEL_PUMP_L2\",\n      \"risk_score\": 0.975,\n      \"risk_level\": \"HIGH\",\n      \"recommended_action\": \"Inspect within the next 5 flight cycles; pre-position a serviceable spare\",\n      \"top_factors\": [\n        {\n          \"feature\": \"primary_z3_signed\",\n          \"value\": 3.713,\n          \"impact\": 1.566,\n          \"reason\": \"Pressure 3.7σ below this unit's own baseline over the last 3 days\"\n        },\n        {\n          \"feature\": \"related_faults_30d\",\n          \"value\": 5.0,\n          \"impact\": 1.066,\n          \"reason\": \"5 related fault message(s) (ATA 28) in the last 30 days\"\n        },\n        {\n          \"feature\": \"caution_faults_7d\",\n          \"value\": 2.0,\n          \"impact\": 1.031,\n          \"reason\": \"2 CAUTION/WARNING-level related fault(s) in 7 days\"\n        }\n      ],\n      \"data_quality\": {\n        \"low_history\": false,\n        \"sensor_missing_ratio_7d\": 0.0,\n        \"days_since_last_reading\": 0.0,\n        \"confidence\": \"normal\"\n      },\n      \"model_version\": \"v1\"\n    },\n    {\n      \"as_of_date\": \"2025-10-15\",\n      \"serial_no\": \"PCV-00018\",\n      \"part_no\": \"PCV-6620-01\",\n      \"part_description\": \"Precooler Control Valve\",\n      \"ata_chapter\": \"36\",\n      \"tail_no\": \"AC008\",\n      \"position\": \"PCV_1\",\n      \"risk_score\": 0.9091,\n      \"risk_level\": \"HIGH\",\n      \"recommended_action\": \"Inspect within the next 5 flight cycles; pre-position a serviceable spare\",\n      \"top_factors\": [\n        {\n          \"feature\": \"caution_faults_7d\",\n          \"value\": 1.0,\n          \"impact\": 1.597,\n          \"reason\": \"1 CAUTION/WARNING-level related fault(s) in 7 days\"\n        },\n        {\n          \"feature\": \"primary_z3_signed\",\n          \"value\": 1.295,\n          \"impact\": 1.058,\n          \"reason\": \"Temperature 1.3σ above this unit's own baseline over the last 3 days\"\n        },\n        {\n          \"feature\": \"days_since_related_fault\",\n          \"value\": 1.0,\n          \"impact\": 1.031,\n          \"reason\": \"Last related fault message 1 day(s) ago\"\n        }\n      ],\n      \"data_quality\": {\n        \"low_history\": false,\n        \"sensor_missing_ratio_7d\": 0.0,\n        \"days_since_last_reading\": 0.0,\n        \"confidence\": \"normal\"\n      },\n      \"model_version\": \"v1\"\n    }\n  ]\n}"
+        }
+      ]
+    },
+    {
+      "name": "Predict - by serial number",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+              "const items = [].concat(pm.response.json().components || pm.response.json());",
+              "pm.test(\"each component has score, level and reasons\", () => items.forEach(c => {",
+              "    pm.expect(c.risk_score).to.be.within(0, 1);",
+              "    pm.expect([\"HIGH\", \"MEDIUM\", \"LOW\"]).to.include(c.risk_level);",
+              "    pm.expect(c.top_factors).to.be.an(\"array\").that.is.not.empty;",
+              "}));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/predict",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "predict"
+          ]
+        },
+        "description": "Risk with reasons for specific components, identified by serial number.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"as_of_date\": \"{{as_of_date}}\",\n  \"components\": [\n    {\n      \"serial_no\": \"FBP-00028\"\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "200 (saved sample)",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/predict",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "predict"
+              ]
+            },
+            "description": "Risk with reasons for specific components, identified by serial number.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"as_of_date\": \"{{as_of_date}}\",\n  \"components\": [\n    {\n      \"serial_no\": \"FBP-00028\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "code": 200,
+          "status": "OK",
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "[\n  {\n    \"as_of_date\": \"2025-10-15\",\n    \"serial_no\": \"FBP-00028\",\n    \"part_no\": \"FBP-2820-03\",\n    \"part_description\": \"Fuel Boost Pump\",\n    \"ata_chapter\": \"28\",\n    \"tail_no\": \"AC038\",\n    \"position\": \"FUEL_PUMP_R1\",\n    \"risk_score\": 0.99,\n    \"risk_level\": \"HIGH\",\n    \"recommended_action\": \"Inspect within the next 5 flight cycles; pre-position a serviceable spare\",\n    \"top_factors\": [\n      {\n        \"feature\": \"primary_z3_signed\",\n        \"value\": 2.788,\n        \"impact\": 1.402,\n        \"reason\": \"Pressure 2.8σ below this unit's own baseline over the last 3 days\"\n      },\n      {\n        \"feature\": \"caution_faults_7d\",\n        \"value\": 2.0,\n        \"impact\": 1.171,\n        \"reason\": \"2 CAUTION/WARNING-level related fault(s) in 7 days\"\n      },\n      {\n        \"feature\": \"related_faults_30d\",\n        \"value\": 3.0,\n        \"impact\": 0.934,\n        \"reason\": \"3 related fault message(s) (ATA 28) in the last 30 days\"\n      }\n    ],\n    \"data_quality\": {\n      \"low_history\": false,\n      \"sensor_missing_ratio_7d\": 0.0,\n      \"days_since_last_reading\": 0.0,\n      \"confidence\": \"normal\"\n    },\n    \"model_version\": \"v1\"\n  }\n]"
+        }
+      ]
+    },
+    {
+      "name": "Predict - by tail + position (new component)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+              "const items = [].concat(pm.response.json().components || pm.response.json());",
+              "pm.test(\"each component has score, level and reasons\", () => items.forEach(c => {",
+              "    pm.expect(c.risk_score).to.be.within(0, 1);",
+              "    pm.expect([\"HIGH\", \"MEDIUM\", \"LOW\"]).to.include(c.risk_level);",
+              "    pm.expect(c.top_factors).to.be.an(\"array\").that.is.not.empty;",
+              "}));",
+              "pm.test(\"flagged as low history\", () => pm.expect(pm.response.json()[0].data_quality.low_history).to.be.true);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/predict",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "predict"
+          ]
+        },
+        "description": "Identify a component by where it is installed. This one was installed < 30 days ago, so data_quality.low_history is true and confidence is reduced.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"as_of_date\": \"{{as_of_date}}\",\n  \"components\": [\n    {\n      \"tail_no\": \"AC032\",\n      \"position\": \"FUEL_PUMP_R2\"\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "200 (saved sample)",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/predict",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "predict"
+              ]
+            },
+            "description": "Identify a component by where it is installed. This one was installed < 30 days ago, so data_quality.low_history is true and confidence is reduced.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"as_of_date\": \"{{as_of_date}}\",\n  \"components\": [\n    {\n      \"tail_no\": \"AC032\",\n      \"position\": \"FUEL_PUMP_R2\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "code": 200,
+          "status": "OK",
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "[\n  {\n    \"as_of_date\": \"2025-10-15\",\n    \"serial_no\": \"FBP-00158\",\n    \"part_no\": \"FBP-2820-03\",\n    \"part_description\": \"Fuel Boost Pump\",\n    \"ata_chapter\": \"28\",\n    \"tail_no\": \"AC032\",\n    \"position\": \"FUEL_PUMP_R2\",\n    \"risk_score\": 0.012,\n    \"risk_level\": \"LOW\",\n    \"recommended_action\": \"No action; keep monitoring\",\n    \"top_factors\": [\n      {\n        \"feature\": \"related_faults_30d\",\n        \"value\": 4.0,\n        \"impact\": 1.21,\n        \"reason\": \"4 related fault message(s) (ATA 28) in the last 30 days\"\n      },\n      {\n        \"feature\": \"days_since_related_fault\",\n        \"value\": 9.0,\n        \"impact\": 0.405,\n        \"reason\": \"Last related fault message 9 day(s) ago\"\n      },\n      {\n        \"feature\": \"fc_per_day_30d\",\n        \"value\": 2.633,\n        \"impact\": 0.254,\n        \"reason\": \"Aircraft utilisation 2.6 cycles/day over 30 days\"\n      }\n    ],\n    \"data_quality\": {\n      \"low_history\": true,\n      \"sensor_missing_ratio_7d\": 0.0,\n      \"days_since_last_reading\": 0.0,\n      \"confidence\": \"reduced\"\n    },\n    \"model_version\": \"v1\"\n  }\n]"
+        }
+      ]
+    },
+    {
+      "name": "Error - component not installed",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"status 404\", () => pm.response.to.have.status(404));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/predict",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "predict"
+          ]
+        },
+        "description": "Unknown or not-installed component returns 404.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"as_of_date\": \"{{as_of_date}}\",\n  \"components\": [\n    {\n      \"serial_no\": \"XXX-99999\"\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "404 (saved sample)",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/predict",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "predict"
+              ]
+            },
+            "description": "Unknown or not-installed component returns 404.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"as_of_date\": \"{{as_of_date}}\",\n  \"components\": [\n    {\n      \"serial_no\": \"XXX-99999\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "code": 404,
+          "status": "Not Found",
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"detail\": \"component {'serial_no': 'XXX-99999'} is not installed on 2025-10-15\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Error - date out of range",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"status 422\", () => pm.response.to.have.status(422));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/fleet/risk?date=2030-01-01",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "fleet",
+            "risk"
+          ],
+          "query": [
+            {
+              "key": "date",
+              "value": "2030-01-01"
+            }
+          ]
+        },
+        "description": "Dates outside the mock data window return 422."
+      },
+      "response": [
+        {
+          "name": "422 (saved sample)",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/fleet/risk?date=2030-01-01",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "fleet",
+                "risk"
+              ],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "2030-01-01"
+                }
+              ]
+            },
+            "description": "Dates outside the mock data window return 422."
+          },
+          "code": 422,
+          "status": "Unprocessable Entity",
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"detail\": \"as_of_date must be between 2024-02-01 and 2025-12-31 (the mock data window)\"\n}"
+        }
+      ]
+    }
+  ]
+}
