@@ -1,0 +1,225 @@
+{
+  "explained_model": "XGBoost",
+  "examples": [
+    {
+      "case": "caught removal",
+      "snapshot_date": "2025-09-11",
+      "serial_no": "ACM-00053",
+      "part_no": "ACM-2206-01",
+      "ata_chapter": "21",
+      "tail_no": "AC006",
+      "position": "PACK_1",
+      "risk_score": 0.99,
+      "risk_level": "HIGH",
+      "actual_outcome": "unscheduled removal (FAILURE_CONFIRMED) 4 FC later",
+      "top_factors": [
+        {
+          "feature": "primary_z3_signed",
+          "value": 5.151260173442816,
+          "impact": 1.746,
+          "reason": "Vibration 5.2\u03c3 above this unit's own baseline over the last 3 days"
+        },
+        {
+          "feature": "days_since_related_fault",
+          "value": 0.0,
+          "impact": 0.885,
+          "reason": "Last related fault message 0 day(s) ago"
+        },
+        {
+          "feature": "related_faults_30d",
+          "value": 4.0,
+          "impact": 0.863,
+          "reason": "4 related fault message(s) (ATA 21) in the last 30 days"
+        }
+      ],
+      "risk_reducing_factors": [
+        {
+          "feature": "caution_faults_7d",
+          "impact": -0.129,
+          "reason": "0 CAUTION/WARNING-level related fault(s) in 7 days"
+        },
+        {
+          "feature": "vib_dev_part",
+          "impact": -0.084,
+          "reason": "Vibration 2.8\u03c3 above the part-number fleet baseline"
+        }
+      ]
+    },
+    {
+      "case": "caught removal",
+      "snapshot_date": "2025-11-16",
+      "serial_no": "PRV-00012",
+      "part_no": "PRV-6612-03",
+      "ata_chapter": "36",
+      "tail_no": "AC002",
+      "position": "BLEED_PRV_1",
+      "risk_score": 0.99,
+      "risk_level": "HIGH",
+      "actual_outcome": "unscheduled removal (FAILURE_CONFIRMED) 11 FC later",
+      "top_factors": [
+        {
+          "feature": "caution_faults_7d",
+          "value": 3.0,
+          "impact": 1.298,
+          "reason": "3 CAUTION/WARNING-level related fault(s) in 7 days"
+        },
+        {
+          "feature": "days_since_related_fault",
+          "value": 0.0,
+          "impact": 0.919,
+          "reason": "Last related fault message 0 day(s) ago"
+        },
+        {
+          "feature": "primary_z3_signed",
+          "value": 1.9288174374802698,
+          "impact": 0.898,
+          "reason": "Pressure 1.9\u03c3 below this unit's own baseline over the last 3 days"
+        }
+      ],
+      "risk_reducing_factors": [
+        {
+          "feature": "pres_mean_7d",
+          "impact": -0.07,
+          "reason": "Pressure 7-day average 42.47 psi"
+        },
+        {
+          "feature": "vib_dev_part",
+          "impact": -0.061,
+          "reason": "Vibration 2.1\u03c3 above the part-number fleet baseline"
+        }
+      ]
+    },
+    {
+      "case": "caught removal",
+      "snapshot_date": "2025-07-07",
+      "serial_no": "EHP-00057",
+      "part_no": "EHP-5620-02",
+      "ata_chapter": "29",
+      "tail_no": "AC031",
+      "position": "EHP_YELLOW",
+      "risk_score": 0.99,
+      "risk_level": "HIGH",
+      "actual_outcome": "unscheduled removal (FAILURE_CONFIRMED) 1 FC later",
+      "top_factors": [
+        {
+          "feature": "primary_z3_signed",
+          "value": 3.33094597038544,
+          "impact": 1.444,
+          "reason": "Temperature 3.3\u03c3 above this unit's own baseline over the last 3 days"
+        },
+        {
+          "feature": "caution_faults_7d",
+          "value": 3.0,
+          "impact": 1.202,
+          "reason": "3 CAUTION/WARNING-level related fault(s) in 7 days"
+        },
+        {
+          "feature": "related_faults_30d",
+          "value": 5.0,
+          "impact": 1.146,
+          "reason": "5 related fault message(s) (ATA 29) in the last 30 days"
+        }
+      ],
+      "risk_reducing_factors": [
+        {
+          "feature": "pres_z3_vs_ref",
+          "impact": -0.118,
+          "reason": "Pressure stable (within 0.5\u03c3 of own baseline)"
+        },
+        {
+          "feature": "vib_z3_vs_ref",
+          "impact": -0.07,
+          "reason": "Vibration stable (within 0.5\u03c3 of own baseline)"
+        }
+      ]
+    },
+    {
+      "case": "false alert",
+      "snapshot_date": "2025-10-02",
+      "serial_no": "PCV-00007",
+      "part_no": "PCV-6620-01",
+      "ata_chapter": "36",
+      "tail_no": "AC016",
+      "position": "PCV_2",
+      "risk_score": 0.789,
+      "risk_level": "HIGH",
+      "actual_outcome": "no unscheduled removal within 30 FC",
+      "top_factors": [
+        {
+          "feature": "primary_z3_signed",
+          "value": 13.2520969457978,
+          "impact": 2.691,
+          "reason": "Temperature 13.3\u03c3 above this unit's own baseline over the last 3 days"
+        },
+        {
+          "feature": "primary_z_signed",
+          "value": 9.886620278046744,
+          "impact": 0.769,
+          "reason": "Temperature 9.9\u03c3 above this unit's own baseline over the last 7 days"
+        },
+        {
+          "feature": "primary_slope_signed",
+          "value": 1.668663096874605,
+          "impact": 0.67,
+          "reason": "Temperature trending in the degradation direction over 14 days (+1.67 part-\u03c3/day)"
+        }
+      ],
+      "risk_reducing_factors": [
+        {
+          "feature": "sensor_missing_ratio_7d",
+          "impact": -0.346,
+          "reason": "Sensor data missing on 43% of flying days in the last week"
+        },
+        {
+          "feature": "days_since_related_fault",
+          "impact": -0.264,
+          "reason": "No related fault message in the last year"
+        }
+      ]
+    },
+    {
+      "case": "missed removal",
+      "snapshot_date": "2025-08-18",
+      "serial_no": "EHP-00101",
+      "part_no": "EHP-5620-02",
+      "ata_chapter": "29",
+      "tail_no": "AC028",
+      "position": "EHP_BLUE",
+      "risk_score": 0.004,
+      "risk_level": "LOW",
+      "actual_outcome": "unscheduled removal (FAILURE_CONFIRMED) 2 FC later",
+      "top_factors": [
+        {
+          "feature": "primary_slope_signed",
+          "value": 0.10652649741851232,
+          "impact": 0.358,
+          "reason": "Temperature trending in the degradation direction over 14 days (+0.11 part-\u03c3/day)"
+        },
+        {
+          "feature": "pres_mean_7d",
+          "value": 2936.6,
+          "impact": 0.188,
+          "reason": "Pressure 7-day average 2,936.60 psi"
+        },
+        {
+          "feature": "oat_7d",
+          "value": 41.51428571428571,
+          "impact": 0.128,
+          "reason": "Hot operating environment: 42\u00b0C average outside air temperature (7 days)"
+        }
+      ],
+      "risk_reducing_factors": [
+        {
+          "feature": "primary_z3_signed",
+          "impact": -0.496,
+          "reason": "Temperature stable (within 0.5\u03c3 of this unit's own baseline) over the last 3 days"
+        },
+        {
+          "feature": "days_since_related_fault",
+          "impact": -0.261,
+          "reason": "Last related fault message 142 day(s) ago"
+        }
+      ]
+    }
+  ]
+}

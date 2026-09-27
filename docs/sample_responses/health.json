@@ -1,0 +1,16 @@
+{
+  "status": "ok",
+  "model_version": "v1",
+  "scorer": "single: XGBoost",
+  "models": [
+    "XGBoost"
+  ],
+  "alert_cap_per_run": 0.05,
+  "flag_threshold_risk": 0.0211,
+  "high_threshold_risk": 0.2174,
+  "train_period": [
+    "2024-01-29",
+    "2025-02-22"
+  ],
+  "horizon": "30 flight cycles"
+}

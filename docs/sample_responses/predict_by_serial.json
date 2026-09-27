@@ -1,0 +1,41 @@
+[
+  {
+    "as_of_date": "2025-10-15",
+    "serial_no": "FBP-00028",
+    "part_no": "FBP-2820-03",
+    "part_description": "Fuel Boost Pump",
+    "ata_chapter": "28",
+    "tail_no": "AC038",
+    "position": "FUEL_PUMP_R1",
+    "risk_score": 0.99,
+    "risk_level": "HIGH",
+    "recommended_action": "Inspect within the next 5 flight cycles; pre-position a serviceable spare",
+    "top_factors": [
+      {
+        "feature": "primary_z3_signed",
+        "value": 2.788,
+        "impact": 1.402,
+        "reason": "Pressure 2.8σ below this unit's own baseline over the last 3 days"
+      },
+      {
+        "feature": "caution_faults_7d",
+        "value": 2.0,
+        "impact": 1.171,
+        "reason": "2 CAUTION/WARNING-level related fault(s) in 7 days"
+      },
+      {
+        "feature": "related_faults_30d",
+        "value": 3.0,
+        "impact": 0.934,
+        "reason": "3 related fault message(s) (ATA 28) in the last 30 days"
+      }
+    ],
+    "data_quality": {
+      "low_history": false,
+      "sensor_missing_ratio_7d": 0.0,
+      "days_since_last_reading": 0.0,
+      "confidence": "normal"
+    },
+    "model_version": "v1"
+  }
+]

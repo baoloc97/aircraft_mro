@@ -1,0 +1,126 @@
+{
+  "as_of_date": "2025-10-15",
+  "active_components": 1160,
+  "alerts": 27,
+  "alert_rate": 0.0233,
+  "returned": 3,
+  "components": [
+    {
+      "as_of_date": "2025-10-15",
+      "serial_no": "FBP-00028",
+      "part_no": "FBP-2820-03",
+      "part_description": "Fuel Boost Pump",
+      "ata_chapter": "28",
+      "tail_no": "AC038",
+      "position": "FUEL_PUMP_R1",
+      "risk_score": 0.99,
+      "risk_level": "HIGH",
+      "recommended_action": "Inspect within the next 5 flight cycles; pre-position a serviceable spare",
+      "top_factors": [
+        {
+          "feature": "primary_z3_signed",
+          "value": 2.788,
+          "impact": 1.402,
+          "reason": "Pressure 2.8σ below this unit's own baseline over the last 3 days"
+        },
+        {
+          "feature": "caution_faults_7d",
+          "value": 2.0,
+          "impact": 1.171,
+          "reason": "2 CAUTION/WARNING-level related fault(s) in 7 days"
+        },
+        {
+          "feature": "related_faults_30d",
+          "value": 3.0,
+          "impact": 0.934,
+          "reason": "3 related fault message(s) (ATA 28) in the last 30 days"
+        }
+      ],
+      "data_quality": {
+        "low_history": false,
+        "sensor_missing_ratio_7d": 0.0,
+        "days_since_last_reading": 0.0,
+        "confidence": "normal"
+      },
+      "model_version": "v1"
+    },
+    {
+      "as_of_date": "2025-10-15",
+      "serial_no": "FBP-00053",
+      "part_no": "FBP-2820-03",
+      "part_description": "Fuel Boost Pump",
+      "ata_chapter": "28",
+      "tail_no": "AC009",
+      "position": "FUEL_PUMP_L2",
+      "risk_score": 0.975,
+      "risk_level": "HIGH",
+      "recommended_action": "Inspect within the next 5 flight cycles; pre-position a serviceable spare",
+      "top_factors": [
+        {
+          "feature": "primary_z3_signed",
+          "value": 3.713,
+          "impact": 1.566,
+          "reason": "Pressure 3.7σ below this unit's own baseline over the last 3 days"
+        },
+        {
+          "feature": "related_faults_30d",
+          "value": 5.0,
+          "impact": 1.066,
+          "reason": "5 related fault message(s) (ATA 28) in the last 30 days"
+        },
+        {
+          "feature": "caution_faults_7d",
+          "value": 2.0,
+          "impact": 1.031,
+          "reason": "2 CAUTION/WARNING-level related fault(s) in 7 days"
+        }
+      ],
+      "data_quality": {
+        "low_history": false,
+        "sensor_missing_ratio_7d": 0.0,
+        "days_since_last_reading": 0.0,
+        "confidence": "normal"
+      },
+      "model_version": "v1"
+    },
+    {
+      "as_of_date": "2025-10-15",
+      "serial_no": "PCV-00018",
+      "part_no": "PCV-6620-01",
+      "part_description": "Precooler Control Valve",
+      "ata_chapter": "36",
+      "tail_no": "AC008",
+      "position": "PCV_1",
+      "risk_score": 0.9091,
+      "risk_level": "HIGH",
+      "recommended_action": "Inspect within the next 5 flight cycles; pre-position a serviceable spare",
+      "top_factors": [
+        {
+          "feature": "caution_faults_7d",
+          "value": 1.0,
+          "impact": 1.597,
+          "reason": "1 CAUTION/WARNING-level related fault(s) in 7 days"
+        },
+        {
+          "feature": "primary_z3_signed",
+          "value": 1.295,
+          "impact": 1.058,
+          "reason": "Temperature 1.3σ above this unit's own baseline over the last 3 days"
+        },
+        {
+          "feature": "days_since_related_fault",
+          "value": 1.0,
+          "impact": 1.031,
+          "reason": "Last related fault message 1 day(s) ago"
+        }
+      ],
+      "data_quality": {
+        "low_history": false,
+        "sensor_missing_ratio_7d": 0.0,
+        "days_since_last_reading": 0.0,
+        "confidence": "normal"
+      },
+      "model_version": "v1"
+    }
+  ]
+}
